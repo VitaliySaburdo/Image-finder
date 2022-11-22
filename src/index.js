@@ -4,7 +4,13 @@ import './css/styles.css';
 
 function renderList(data) {
   const imageItem = data
-    .map(() => {
+    .map(({
+        flags,
+        name,
+        capital,
+        population,
+        languages,
+      }) => {
       `<div class="photo-card">
   <img src="" alt="" loading="lazy" />
   <div class="info">
