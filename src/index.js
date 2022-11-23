@@ -1,55 +1,65 @@
 import './css/styles.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import NewsApiService  from './js/fetchName'
+import NewsApiService from './js/fetchName';
 
 const refs = {
   searchForm: document.querySelector('#search-form'),
-  loadMoreBtn:document.querySelector('.load-more'),
-}
+  loadMoreBtn: document.querySelector('.load-more'),
+  cardsContainer: document.querySelector('.gallery'),
+};
 
 refs.searchForm.addEventListener('submit', onSearchForm);
-refs.loadMoreBtn.addEventListener('click', onLoadMore)
+refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
 const newsApiService = new NewsApiService();
 
 function onSearchForm(evt) {
   evt.preventDefault();
   newsApiService.query = evt.currentTarget.elements.searchQuery.value;
-  
-  newsApiService.fetchName();
+  newsApiService.resetPage();
+  newsApiService.fetchName().then(renderList);
 }
 
 function onLoadMore() {
-  newsApiService.fetchName();
+  newsApiService.fetchName().then(renderList);
 }
 
 function renderList(data) {
-  const imageItem = data
-    .map(({
-        flags,
-        name,
-        capital,
-        population,
-        languages,
+  console.log(data.hits);
+  const markupGallery = data.hits
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
       }) => {
-      `<div class="photo-card">
-  <img src="" alt="" loading="lazy" />
+        `<div class="photo-card">
+        <a class="gallery__link" href="${largeImageURL}">
+  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
   <div class="info">
     <p class="info-item">
-      <b>Likes</b>
+      <b>${likes}</b>
     </p>
     <p class="info-item">
-      <b>Views</b>
+      <b>${views}</b>
     </p>
     <p class="info-item">
-      <b>Comments</b>
+      <b>${comments}</b>
     </p>
     <p class="info-item">
-      <b>Downloads</b>
+      <b>${downloads}</b>
     </p>
   </div>
+  </a>
 </div>`;
-    })
-    .join();
-  cardsContainer.innerHTML = imageItem;
+      }
+    )
+    .join('');
+  refs.cardsContainer.insertAdjacentHTML('beforeend', markupGallery);
 }
