@@ -11,7 +11,6 @@ refs.searchForm.addEventListener('submit', onSearchForm);
 refs.loadMoreBtn.addEventListener('click', onLoadMore)
 
 const newsApiService = new NewsApiService();
-console.log(newsApiService)
 
 function onSearchForm(evt) {
   evt.preventDefault();
