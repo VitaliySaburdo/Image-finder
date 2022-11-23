@@ -15,6 +15,12 @@ refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
 const newsApiService = new NewsApiService();
 
+new SimpleLightbox('.gallery a', {
+  captions: true,
+  captionsData: 'alt',
+  captionDelay: 250,
+});
+
 function onSearchForm(evt) {
   evt.preventDefault();
   newsApiService.query = evt.currentTarget.elements.searchQuery.value;
@@ -38,7 +44,7 @@ function renderList(data) {
         views,
         comments,
         downloads,
-      }) => {
+      }) => 
         `<div class="photo-card">
         <a class="gallery__link" href="${largeImageURL}">
   <img src="${webformatURL}" alt="${tags}" loading="lazy" />
@@ -57,9 +63,6 @@ function renderList(data) {
     </p>
   </div>
   </a>
-</div>`;
-      }
-    )
-    .join('');
+</div>`).join('');
   refs.cardsContainer.insertAdjacentHTML('beforeend', markupGallery);
 }
