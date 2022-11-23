@@ -1,22 +1,28 @@
 import './css/styles.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { fetchName } from './js/fetchName';
+import NewsApiService  from './js/fetchName'
 
 const refs = {
   searchForm: document.querySelector('#search-form'),
-  loadMoreBtn:document.querySelector(''),
+  loadMoreBtn:document.querySelector('.load-more'),
 }
 
 refs.searchForm.addEventListener('submit', onSearchForm);
+refs.loadMoreBtn.addEventListener('click', onLoadMore)
+
+const newsApiService = new NewsApiService();
+console.log(newsApiService)
 
 function onSearchForm(evt) {
   evt.preventDefault();
-  const searchQuery = evt.currentTarget.elements.searchQuery.value;
-
-  fetchName(searchQuery).then(data =>console.log(data))
-
+  newsApiService.query = evt.currentTarget.elements.searchQuery.value;
+  
+  newsApiService.fetchName();
 }
 
+function onLoadMore() {
+  newsApiService.fetchName();
+}
 
 function renderList(data) {
   const imageItem = data
