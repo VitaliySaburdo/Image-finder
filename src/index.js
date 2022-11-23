@@ -1,19 +1,22 @@
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import './css/styles.css';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { fetchName } from './js/fetchName';
 
-
-
-function ringsApi() {
-  const BASE_URL = 'https://pixabay.com/api/';
-  const API_KEY = '31530619-c8ff0ea55f4ca3c44478c1e7e';
-  return fetch(`${BASE_URL}?key=${API_KEY}&q=${name}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=40`).then(resp => {
-    if (!resp.ok) {
-    throw new Error(resp.statusText)
-    }
-  return resp.json()}).then(data => console.log(data))
+const refs = {
+  searchForm: document.querySelector('#search-form'),
+  loadMoreBtn:document.querySelector(''),
 }
 
-// Your API key: 31530619-c8ff0ea55f4ca3c44478c1e7e
+refs.searchForm.addEventListener('submit', onSearchForm);
+
+function onSearchForm(evt) {
+  evt.preventDefault();
+  const searchQuery = evt.currentTarget.elements.searchQuery.value;
+
+  fetchName(searchQuery).then(data =>console.log(data))
+
+}
+
 
 function renderList(data) {
   const imageItem = data

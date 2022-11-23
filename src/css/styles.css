@@ -26,7 +26,6 @@ li {
   list-style: none;
 }
 .search {
-  position: fixed;
   display: flex;
   width: 100%;
   height: 60px;
@@ -63,5 +62,22 @@ li {
 }
 
 .search-form button:hover {
-  background: #2b85cf;
+  background: #02090f;
+}
+
+.load-more {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 10px 32px;
+  min-width: 200px;
+  border: 0;
+  transition-property: background-color;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgb(62, 91, 197);
+  color: #f1f1f1;
 }
