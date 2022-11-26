@@ -25,9 +25,16 @@ ul,
 li {
   list-style: none;
 }
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
 .search {
   position: fixed;
   top: 0;
+  width: 100vw;
+  z-index: 100;
   display: flex;
   width: 100%;
   height: 60px;
@@ -68,10 +75,11 @@ li {
 }
 
 .load-more {
+  margin-top: 20px;
+  margin-bottom: 20px;
   display: block;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 70px;
   cursor: pointer;
   border-radius: 6px;
   padding: 10px 32px;
@@ -83,7 +91,43 @@ li {
   background-color: rgb(62, 91, 197);
   color: #f1f1f1;
 }
+.load-more.is-hidden {
+  display: none;
+}
 
 .gallery {
+  padding-top: 70px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 10px;
+  position: relative;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.info {
   display: flex;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.gallery__link {
+  display: block;
+  text-decoration: none;
+}
+.photo-card {
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0px 3px 1px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.08),
+    0px 2px 2px rgba(0, 0, 0, 0.12);
+}
+.info-item {
+  color: #212121;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.gallery__img {
+  width: 100%;
+  height: 250px;
 }

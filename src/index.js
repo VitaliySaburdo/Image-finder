@@ -15,15 +15,20 @@ refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
 const newsApiService = new NewsApiService();
 
-new SimpleLightbox('.gallery a', {
-  captions: true,
-  captionsData: 'alt',
-  captionDelay: 250,
-});
+// new SimpleLightbox('.gallery a', {
+//   captions: true,
+//   captionsData: 'alt',
+//   captionDelay: 250,
+// });
 
 function onSearchForm(evt) {
   evt.preventDefault();
-  newsApiService.query = evt.currentTarget.elements.searchQuery.value;
+  newsApiService.query = evt.currentTarget.elements.searchQuery.value.trim();
+  if (newsApiService.query === '') {
+    return Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+  }
   newsApiService.resetPage();
   newsApiService.fetchName().then(renderList);
 }
@@ -44,25 +49,32 @@ function renderList(data) {
         views,
         comments,
         downloads,
-      }) => 
+      }) =>
         `<div class="photo-card">
         <a class="gallery__link" href="${largeImageURL}">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+  <img src="${webformatURL}" alt="${tags}" class = "gallery__img" 
+             loading="lazy" />
   <div class="info">
     <p class="info-item">
+    <b>Likes</b>
       <b>${likes}</b>
     </p>
     <p class="info-item">
+    <b>Views</b>
       <b>${views}</b>
     </p>
     <p class="info-item">
+    <b>Comments</b>
       <b>${comments}</b>
     </p>
     <p class="info-item">
+    <b>Downloads</b>
       <b>${downloads}</b>
     </p>
   </div>
   </a>
-</div>`).join('');
+</div>`
+    )
+    .join('');
   refs.cardsContainer.insertAdjacentHTML('beforeend', markupGallery);
 }
