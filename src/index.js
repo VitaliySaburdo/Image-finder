@@ -13,16 +13,19 @@ const refs = {
 refs.searchForm.addEventListener('submit', onSearchForm);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
+refs.loadMoreBtn.classList.add('is-hidden');
+
 const newsApiService = new NewsApiService();
 
-// new SimpleLightbox('.gallery a', {
-//   captions: true,
-//   captionsData: 'alt',
-//   captionDelay: 250,
-// });
+let gallery = new SimpleLightbox('.gallery a', {
+  captions: true,
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 function onSearchForm(evt) {
   evt.preventDefault();
+  refs.cardsContainer.innerHTML = '';
   newsApiService.query = evt.currentTarget.elements.searchQuery.value.trim();
   if (newsApiService.query === '') {
     return Notify.failure(
@@ -30,11 +33,30 @@ function onSearchForm(evt) {
     );
   }
   newsApiService.resetPage();
-  newsApiService.fetchName().then(renderList);
+  newsApiService
+    .fetchName()
+    .then(data => {
+      if (data.hits.length === 0) {
+        refs.loadMoreBtn.classList.add('is-hidden');
+        return Notify.failure(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
+      } else {
+        renderList(data);
+        Notify.success('Hooray! We found totalHits images.');
+        refs.loadMoreBtn.classList.remove('is-hidden');
+      }
+    })
+    .catch(err => onFetchError(err));
 }
 
 function onLoadMore() {
   newsApiService.fetchName().then(renderList);
+}
+
+function onFetchError() {
+  cardsContainer.innerHTML = '';
+  Notify.failure('Oops, there is no country with that name');
 }
 
 function renderList(data) {
@@ -77,4 +99,5 @@ function renderList(data) {
     )
     .join('');
   refs.cardsContainer.insertAdjacentHTML('beforeend', markupGallery);
+  gallery.refresh();
 }
