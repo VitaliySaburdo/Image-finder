@@ -43,7 +43,7 @@ function onSearchForm(evt) {
         );
       } else {
         renderList(data);
-        Notify.success('Hooray! We found totalHits images.');
+        Notify.success(`Hooray! We found ${data.totalHits} images.`);
         refs.loadMoreBtn.classList.remove('is-hidden');
       }
     })
