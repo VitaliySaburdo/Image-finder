@@ -56,6 +56,7 @@ function onLoadMore() {
   newsApiService.fetchName().then(data => {
     const total = Math.ceil(data.totalHits / newsApiService.per_page);
     if (total === newsApiService.page - 1) {
+      refs.loadMoreBtn.classList.add('is-hidden');
       Notify.info(`We're sorry, but you've reached the end of search results.`);
       return;
     } else {
