@@ -17,7 +17,7 @@ refs.loadMoreBtn.classList.add('is-hidden');
 
 const newsApiService = new NewsApiService();
 
-let gallery = new SimpleLightbox('.gallery a', {
+const gallery = new SimpleLightbox('.gallery a', {
   captions: true,
   captionsData: 'alt',
   captionDelay: 250,
@@ -47,20 +47,34 @@ function onSearchForm(evt) {
         refs.loadMoreBtn.classList.remove('is-hidden');
       }
     })
-    .catch(err => onFetchError(err));
+    .catch(err => console.log(err));
 }
 
 function onLoadMore() {
-  newsApiService.fetchName().then(renderList);
+  newsApiService.fetchName().then(data => {
+    const total = Math.ceil(data.totalHits / newsApiService.per_page);
+    if (total === newsApiService.page - 1) {
+      Notify.info(`We're sorry, but you've reached the end of search results.`);
+      return;
+    } else {
+      renderList(data);
+    }
+  });
+  smoothScroll();
 }
 
-function onFetchError() {
-  cardsContainer.innerHTML = '';
-  Notify.failure('Oops, there is no country with that name');
+function smoothScroll() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
 
 function renderList(data) {
-  console.log(data.hits);
   const markupGallery = data.hits
     .map(
       ({
@@ -79,19 +93,19 @@ function renderList(data) {
   <div class="info">
     <p class="info-item">
     <b>Likes</b>
-      <b>${likes}</b>
+    <span>${likes}</span>
     </p>
     <p class="info-item">
     <b>Views</b>
-      <b>${views}</b>
+    <span>${views}</span>
     </p>
     <p class="info-item">
     <b>Comments</b>
-      <b>${comments}</b>
+    <span>${comments}</span>
     </p>
     <p class="info-item">
     <b>Downloads</b>
-      <b>${downloads}</b>
+    <span>${downloads}</span>
     </p>
   </div>
   </a>
