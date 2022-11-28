@@ -61,15 +61,14 @@ function onLoadMore() {
       return;
     } else {
       renderList(data);
+      smoothScroll();
     }
   });
-  smoothScroll();
 }
 
 function smoothScroll() {
-  const { height: cardHeight } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
+  const { height: cardHeight } =
+    refs.cardsContainer.firstElementChild.getBoundingClientRect();
 
   window.scrollBy({
     top: cardHeight * 2,
