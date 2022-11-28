@@ -28,6 +28,7 @@ function onSearchForm(evt) {
   refs.cardsContainer.innerHTML = '';
   newsApiService.query = evt.currentTarget.elements.searchQuery.value.trim();
   if (newsApiService.query === '') {
+    refs.loadMoreBtn.classList.add('is-hidden');
     return Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
@@ -38,6 +39,7 @@ function onSearchForm(evt) {
     .then(data => {
       if (data.hits.length === 0) {
         refs.loadMoreBtn.classList.add('is-hidden');
+        refs.cardsContainer.innerHTML = '';
         return Notify.failure(
           'Sorry, there are no images matching your search query. Please try again.'
         );
