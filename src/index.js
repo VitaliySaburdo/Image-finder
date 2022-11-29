@@ -26,6 +26,7 @@ const gallery = new SimpleLightbox('.gallery a', {
 function onSearchForm(evt) {
   evt.preventDefault();
   refs.cardsContainer.innerHTML = '';
+  refs.loadMoreBtn.classList.add('is-hidden');
   newsApiService.query = evt.currentTarget.elements.searchQuery.value.trim();
   if (newsApiService.query === '') {
     refs.loadMoreBtn.classList.add('is-hidden');
@@ -38,7 +39,6 @@ function onSearchForm(evt) {
     .fetchName()
     .then(data => {
       if (data.hits.length === 0) {
-        refs.loadMoreBtn.classList.add('is-hidden');
         refs.cardsContainer.innerHTML = '';
         return Notify.failure(
           'Sorry, there are no images matching your search query. Please try again.'
@@ -46,7 +46,9 @@ function onSearchForm(evt) {
       } else {
         renderList(data);
         Notify.success(`Hooray! We found ${data.totalHits} images.`);
-        refs.loadMoreBtn.classList.remove('is-hidden');
+        setTimeout(() => {
+          refs.loadMoreBtn.classList.remove('is-hidden');
+        }, 500);
       }
     })
     .catch(err => console.log(err));
@@ -54,15 +56,15 @@ function onSearchForm(evt) {
 
 function onLoadMore() {
   newsApiService.fetchName().then(data => {
-    const total = Math.ceil(data.totalHits / newsApiService.per_page);
-    if (total === newsApiService.page - 1) {
+    renderList(data);
+    const totalPages = Math.ceil(data.totalHits / newsApiService.per_page);
+    if (totalPages === newsApiService.page - 1) {
       refs.loadMoreBtn.classList.add('is-hidden');
       Notify.info(`We're sorry, but you've reached the end of search results.`);
       return;
-    } else {
-      renderList(data);
-      smoothScroll();
     }
+
+    smoothScroll();
   });
 }
 
