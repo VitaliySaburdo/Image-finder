@@ -7,9 +7,10 @@ export default class NewsApiService {
     this.per_page = 40;
   }
 
-  async fetchName() {
+  async fetchSearchQuery() {
     const BASE_URL = 'https://pixabay.com/api/';
     const API_KEY = '31530619-c8ff0ea55f4ca3c44478c1e7e';
+
     const searchParams = new URLSearchParams({
       key: API_KEY,
       q: this.searchQuery,
@@ -19,6 +20,7 @@ export default class NewsApiService {
       page: this.page,
       per_page: this.per_page,
     });
+
     const url = `${BASE_URL}?${searchParams}`;
 
     return await axios.get(url).then(async response => {

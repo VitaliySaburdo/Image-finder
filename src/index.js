@@ -2,13 +2,10 @@ import './css/styles.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import NewsApiService from './js/fetchName';
+import NewsApiService from './js/api-service';
+import { getRefs } from './js/refs';
 
-const refs = {
-  searchForm: document.querySelector('#search-form'),
-  loadMoreBtn: document.querySelector('.load-more'),
-  cardsContainer: document.querySelector('.gallery'),
-};
+const refs = getRefs();
 
 refs.searchForm.addEventListener('submit', onSearchForm);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
@@ -25,8 +22,10 @@ const gallery = new SimpleLightbox('.gallery a', {
 
 function onSearchForm(evt) {
   evt.preventDefault();
+
   refs.cardsContainer.innerHTML = '';
   refs.loadMoreBtn.classList.add('is-hidden');
+
   newsApiService.query = evt.currentTarget.elements.searchQuery.value.trim();
   if (newsApiService.query === '') {
     refs.loadMoreBtn.classList.add('is-hidden');
@@ -36,7 +35,7 @@ function onSearchForm(evt) {
   }
   newsApiService.resetPage();
   newsApiService
-    .fetchName()
+    .fetchSearchQuery()
     .then(data => {
       if (data.hits.length === 0) {
         refs.cardsContainer.innerHTML = '';
