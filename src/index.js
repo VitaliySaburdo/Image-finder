@@ -1,9 +1,9 @@
+import apiService from './js/apiService';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { getRefs } from './js/getRefs';
+import { renderList } from './js/renderCards';
 import './css/styles.css';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { getRefs } from './js/refs';
-import { renderList } from './js/renderCards';
-import apiService from './js/api-service';
 
 const newApiService = new apiService();
 
@@ -21,6 +21,7 @@ function onSearchForm(evt) {
   refs.loadMoreBtn.classList.add('is-hidden');
 
   newApiService.query = evt.currentTarget.elements.searchQuery.value.trim();
+
   if (newApiService.query === '') {
     refs.loadMoreBtn.classList.add('is-hidden');
     return Notify.failure(

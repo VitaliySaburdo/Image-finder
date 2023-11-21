@@ -1,4 +1,4 @@
-import { getRefs } from './refs';
+import { getRefs } from './getRefs';
 import { gallery } from './searchQuerySettings';
 
 const refs = getRefs();
