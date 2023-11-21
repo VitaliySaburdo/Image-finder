@@ -2,6 +2,7 @@ import apiService from './js/apiService';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { getRefs } from './js/getRefs';
 import { renderList } from './js/renderCards';
+import { LoadMoreBtn } from './js/loadMoreBtn';
 import './css/styles.css';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
@@ -12,44 +13,63 @@ const refs = getRefs();
 refs.searchForm.addEventListener('submit', onSearchForm);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
-refs.loadMoreBtn.classList.add('is-hidden');
+const loadMoreBtn = new LoadMoreBtn({
+  selector: refs.loadMoreBtn,
+});
 
-function onSearchForm(evt) {
+loadMoreBtn.hide();
+
+async function onSearchForm(evt) {
   evt.preventDefault();
 
   refs.cardsContainer.innerHTML = '';
-  refs.loadMoreBtn.classList.add('is-hidden');
 
   newApiService.query = evt.currentTarget.elements.searchQuery.value.trim();
 
   if (newApiService.query === '') {
-    refs.loadMoreBtn.classList.add('is-hidden');
     return Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
   }
   newApiService.resetPage();
-  newApiService
-    .fetchSearchQuery()
-    .then(data => {
-      if (data.hits.length === 0) {
-        refs.cardsContainer.innerHTML = '';
-        return Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      } else {
-        renderList(data);
-        Notify.success(`Hooray! We found ${data.totalHits} images.`);
-        setTimeout(() => {
-          refs.loadMoreBtn.classList.remove('is-hidden');
-        }, 500);
-      }
-    })
-    .catch(err => console.log(err));
+
+  try {
+    const data = await newApiService.fetchSearchQuery();
+    if (data.hits.length === 0) {
+      refs.cardsContainer.innerHTML = '';
+      return Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    } else {
+      renderList(data);
+      Notify.success(`Hooray! We found ${data.totalHits} images.`);
+      setTimeout(() => {
+        loadMoreBtn.show();
+      }, 500);
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-function onLoadMore() {
-  newApiService.fetchName().then(data => {
+async function onLoadMore() {
+  // try {
+  //   loadMoreBtn.disabled();
+  //   const data = await newApiService.fetchSearchQuery();
+  //   renderList(data);
+  // const totalPages = Math.ceil(data.totalHits / newApiService.per_page);
+  // if (totalPages === newApiService.page - 1) {
+  //   refs.loadMoreBtn.classList.add('is-hidden');
+  //   Notify.info(`We're sorry, but you've reached the end of search results.`);
+  //   return;
+  // }
+  //   smoothScroll();
+  // } catch (error) {
+  //   console.log(error);
+  // } finally {
+  //   loadMoreBtn.enabled();
+  // }
+  newApiService.fetchSearchQuery().then(data => {
     renderList(data);
     const totalPages = Math.ceil(data.totalHits / newApiService.per_page);
     if (totalPages === newApiService.page - 1) {
