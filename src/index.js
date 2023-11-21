@@ -50,6 +50,7 @@ async function onSearchForm(evt) {
   } catch (error) {
     console.log(error);
   }
+  refs.input.value = '';
 }
 
 async function onLoadMore() {

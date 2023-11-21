@@ -3,5 +3,6 @@ export function getRefs() {
     searchForm: document.querySelector('#search-form'),
     loadMoreBtn: document.querySelector('.load-more'),
     cardsContainer: document.querySelector('.gallery'),
+    input: document.querySelector('#name'),
   };
 }
