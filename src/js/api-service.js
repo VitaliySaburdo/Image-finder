@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-export default class NewsApiService {
+const BASE_URL = 'https://pixabay.com/api/';
+const API_KEY = '31530619-c8ff0ea55f4ca3c44478c1e7e';
+
+export default class apiService {
   constructor() {
     this.searchQuery = '';
     this.page = 1;
@@ -8,9 +11,6 @@ export default class NewsApiService {
   }
 
   async fetchSearchQuery() {
-    const BASE_URL = 'https://pixabay.com/api/';
-    const API_KEY = '31530619-c8ff0ea55f4ca3c44478c1e7e';
-
     const searchParams = new URLSearchParams({
       key: API_KEY,
       q: this.searchQuery,

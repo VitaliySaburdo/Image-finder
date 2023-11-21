@@ -1,9 +1,11 @@
 import './css/styles.css';
-import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import NewsApiService from './js/api-service';
 import { getRefs } from './js/refs';
+import { renderList } from './js/renderCards';
+import apiService from './js/api-service';
+
+const newApiService = new apiService();
 
 const refs = getRefs();
 
@@ -12,29 +14,21 @@ refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
 refs.loadMoreBtn.classList.add('is-hidden');
 
-const newsApiService = new NewsApiService();
-
-const gallery = new SimpleLightbox('.gallery a', {
-  captions: true,
-  captionsData: 'alt',
-  captionDelay: 250,
-});
-
 function onSearchForm(evt) {
   evt.preventDefault();
 
   refs.cardsContainer.innerHTML = '';
   refs.loadMoreBtn.classList.add('is-hidden');
 
-  newsApiService.query = evt.currentTarget.elements.searchQuery.value.trim();
-  if (newsApiService.query === '') {
+  newApiService.query = evt.currentTarget.elements.searchQuery.value.trim();
+  if (newApiService.query === '') {
     refs.loadMoreBtn.classList.add('is-hidden');
     return Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
   }
-  newsApiService.resetPage();
-  newsApiService
+  newApiService.resetPage();
+  newApiService
     .fetchSearchQuery()
     .then(data => {
       if (data.hits.length === 0) {
@@ -54,10 +48,10 @@ function onSearchForm(evt) {
 }
 
 function onLoadMore() {
-  newsApiService.fetchName().then(data => {
+  newApiService.fetchName().then(data => {
     renderList(data);
-    const totalPages = Math.ceil(data.totalHits / newsApiService.per_page);
-    if (totalPages === newsApiService.page - 1) {
+    const totalPages = Math.ceil(data.totalHits / newApiService.per_page);
+    if (totalPages === newApiService.page - 1) {
       refs.loadMoreBtn.classList.add('is-hidden');
       Notify.info(`We're sorry, but you've reached the end of search results.`);
       return;
@@ -75,46 +69,4 @@ function smoothScroll() {
     top: cardHeight * 2,
     behavior: 'smooth',
   });
-}
-
-function renderList(data) {
-  const markupGallery = data.hits
-    .map(
-      ({
-        webformatURL,
-        largeImageURL,
-        tags,
-        likes,
-        views,
-        comments,
-        downloads,
-      }) =>
-        `<div class="photo-card">
-        <a class="gallery__link" href="${largeImageURL}">
-  <img src="${webformatURL}" alt="${tags}" class = "gallery__img" 
-             loading="lazy" />
-  <div class="info">
-    <p class="info-item">
-    <b>Likes</b>
-    <span>${likes}</span>
-    </p>
-    <p class="info-item">
-    <b>Views</b>
-    <span>${views}</span>
-    </p>
-    <p class="info-item">
-    <b>Comments</b>
-    <span>${comments}</span>
-    </p>
-    <p class="info-item">
-    <b>Downloads</b>
-    <span>${downloads}</span>
-    </p>
-  </div>
-  </a>
-</div>`
-    )
-    .join('');
-  refs.cardsContainer.insertAdjacentHTML('beforeend', markupGallery);
-  gallery.refresh();
 }
