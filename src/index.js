@@ -59,7 +59,7 @@ async function onLoadMore() {
     renderList(data);
     const totalPages = Math.ceil(data.totalHits / newApiService.per_page);
     if (totalPages === newApiService.page - 1) {
-      refs.loadMoreBtn.classList.add('is-hidden');
+      loadMoreBtn.hide();
       Notify.info(`We're sorry, but you've reached the end of search results.`);
       return;
     }
