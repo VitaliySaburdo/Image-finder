@@ -53,23 +53,9 @@ async function onSearchForm(evt) {
 }
 
 async function onLoadMore() {
-  // try {
-  //   loadMoreBtn.disabled();
-  //   const data = await newApiService.fetchSearchQuery();
-  //   renderList(data);
-  // const totalPages = Math.ceil(data.totalHits / newApiService.per_page);
-  // if (totalPages === newApiService.page - 1) {
-  //   refs.loadMoreBtn.classList.add('is-hidden');
-  //   Notify.info(`We're sorry, but you've reached the end of search results.`);
-  //   return;
-  // }
-  //   smoothScroll();
-  // } catch (error) {
-  //   console.log(error);
-  // } finally {
-  //   loadMoreBtn.enabled();
-  // }
-  newApiService.fetchSearchQuery().then(data => {
+  try {
+    loadMoreBtn.disabled();
+    const data = await newApiService.fetchSearchQuery();
     renderList(data);
     const totalPages = Math.ceil(data.totalHits / newApiService.per_page);
     if (totalPages === newApiService.page - 1) {
@@ -77,9 +63,12 @@ async function onLoadMore() {
       Notify.info(`We're sorry, but you've reached the end of search results.`);
       return;
     }
-
     smoothScroll();
-  });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loadMoreBtn.enabled();
+  }
 }
 
 function smoothScroll() {
